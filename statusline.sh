@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Claude Code status line script
-# Reads JSON from stdin and outputs a 2-line status display
+# Reads JSON from stdin and outputs a status line
 
 # ANSI colors
 CYAN='\033[36m'
@@ -14,10 +14,12 @@ RESET='\033[0m'
 input=$(cat)
 
 # --- Extract fields ---
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-model=$(echo "$input" | jq -r '.model.display_name // empty')
-current_dir=$(echo "$input" | jq -r '.workspace.current_dir // empty')
-session_name=$(echo "$input" | jq -r '.session_name // empty')
+IFS=$'\t' read -r used_pct model current_dir branch_json < <(echo "$input" | jq -r '[
+  .context_window.used_percentage // "",
+  .model.display_name // "",
+  .workspace.current_dir // "",
+  .git_state.branch // ""
+] | @tsv')
 
 # --- Effort level from settings ---
 effort=$(jq -r '.effortLevel // empty' ~/.claude/settings.local.json 2>/dev/null)
@@ -31,7 +33,7 @@ else
 fi
 
 # --- Git branch ---
-branch=$(echo "$input" | jq -r '.git_state.branch // empty' 2>/dev/null)
+branch="$branch_json"
 if [ -z "$branch" ]; then
   branch=$(git -C "$current_dir" branch --show-current 2>/dev/null || true)
 fi
@@ -63,4 +65,4 @@ if [ -n "$branch" ]; then
 fi
 
 # --- Output ---
-printf "%b\n%b\n" "$line1"
+printf "%b\n" "$line1"

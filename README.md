@@ -81,4 +81,4 @@ The status line can display your current effort level if set in `~/.claude/setti
 
 ## How it works
 
-Claude Code pipes a JSON payload to the configured `statusCommand` via stdin. The script reads that JSON using `jq`, extracts the relevant fields, and prints a formatted, color-coded status line back to the terminal.
+Claude Code pipes a JSON payload to the configured `statusCommand` via stdin. The script reads that JSON with a single `jq` invocation (using `@tsv` output and shell `read`) to extract all fields at once, then prints a formatted, color-coded status line to the terminal.
