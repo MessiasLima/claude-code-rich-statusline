@@ -60,16 +60,6 @@ Claude Code supports a custom status line via the `statusCommand` setting. Add i
 }
 ```
 
-### 4. (Optional) Set effort level
-
-The status line can display your current effort level if set in `~/.claude/settings.json` or `~/.claude/settings.local.json`:
-
-```json
-{
-  "effortLevel": "high"
-}
-```
-
 ## What it displays
 
 | Symbol | Field                     | Source                                |

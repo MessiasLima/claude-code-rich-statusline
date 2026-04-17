@@ -14,12 +14,10 @@ RESET='\033[0m'
 input=$(cat)
 
 # --- Extract fields ---
-IFS=$'\t' read -r used_pct model current_dir branch_json < <(echo "$input" | jq -r '[
-  .context_window.used_percentage // "",
-  .model.display_name // "",
-  .workspace.current_dir // "",
-  .git_state.branch // ""
-] | @tsv')
+used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+model=$(echo "$input" | jq -r '.model.display_name // empty')
+current_dir=$(echo "$input" | jq -r '.workspace.current_dir // empty')
+session_name=$(echo "$input" | jq -r '.session_name // empty')
 
 # --- Effort level from settings ---
 effort=$(jq -r '.effortLevel // empty' ~/.claude/settings.local.json 2>/dev/null)
