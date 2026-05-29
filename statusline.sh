@@ -8,7 +8,20 @@ MAGENTA='\033[35m'
 YELLOW='\033[33m'
 GREEN='\033[32m'
 BLUE='\033[34m'
+RED='\033[31m'
 RESET='\033[0m'
+
+# Progress bar helper: $1 = percentage (may be float, e.g. 23.5)
+# Outputs a 10-char [█░] bar, color-coded by threshold
+bar() {
+  local pct=${1%.*}; [ -z "$pct" ] && pct=0
+  local filled=$(( (pct * 10 + 50) / 100 )); [ "$filled" -gt 10 ] && filled=10
+  local color="$GREEN"; [ "$pct" -ge 50 ] && color="$YELLOW"; [ "$pct" -ge 80 ] && color="$RED"
+  local b='' i
+  for ((i=0; i<filled; i++)); do b="${b}█"; done
+  for ((i=filled; i<10; i++)); do b="${b}░"; done
+  printf '%b[%s]%b %s%%' "$color" "$b" "$RESET" "$pct"
+}
 
 # Read stdin
 input=$(cat)
@@ -64,3 +77,27 @@ fi
 
 # --- Output ---
 printf "%b\n" "$line1"
+
+# --- Line 2: Claude Code usage (rate limits, Pro/Max only) ---
+# Only present after the first API response; absent entirely for non-Pro/Max users
+IFS=$'\t' read -r five_pct five_reset seven_pct seven_reset <<<"$(
+  echo "$input" | jq -r '[
+    .rate_limits.five_hour.used_percentage // "",
+    .rate_limits.five_hour.resets_at       // "",
+    .rate_limits.seven_day.used_percentage // "",
+    .rate_limits.seven_day.resets_at       // ""
+  ] | @tsv')"
+
+line2=""
+if [ -n "$five_pct" ]; then
+  seg="⏱ $(bar "$five_pct")"
+  [ -n "$five_reset" ] && seg="$seg (resets $(date -r "$five_reset" "+%H:%M"))"
+  line2="$seg"
+fi
+if [ -n "$seven_pct" ]; then
+  seg="📅 $(bar "$seven_pct")"
+  [ -n "$seven_reset" ] && seg="$seg (resets $(date -r "$seven_reset" "+%a"))"
+  line2="${line2:+$line2$sep}$seg"
+fi
+
+[ -n "$line2" ] && printf "%b\n" "$line2"

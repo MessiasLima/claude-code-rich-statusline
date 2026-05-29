@@ -10,7 +10,10 @@ A custom status line script for Claude Code that displays rich session informati
 
 ```
 ◈ 42% · ◆ Claude Sonnet 4.6 (high) · ⌂ my-project · ⎇ main
+⏱ [████░░░░░░] 23% (resets 14:30) · 📅 [████░░░░░░] 41% (resets Fri)
 ```
+
+> Line 2 only appears for Claude.ai Pro/Max subscribers after the first API response in a session.
 
 ## Requirements
 
@@ -68,6 +71,8 @@ Claude Code supports a custom status line via the `statusCommand` setting. Add i
 | `◆`    | Model name + effort level | Claude Code session data + settings   |
 | `⌂`    | Project folder name       | Current working directory             |
 | `⎇`    | Git branch                | Session data or `git branch` fallback |
+| `⏱`    | 5-hour rate limit bar     | `rate_limits.five_hour` (Pro/Max only) |
+| `📅`   | 7-day rate limit bar      | `rate_limits.seven_day` (Pro/Max only) |
 
 ## How it works
 
