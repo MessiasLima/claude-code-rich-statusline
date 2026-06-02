@@ -1,6 +1,6 @@
 # cc-statusline
 
-![Screenshot](docs/screenshot.png)
+![Screenshot](docs/screenshot2.png)
 
 A rich, multi-line status line for [Claude Code](https://claude.ai/code) — context window usage,
 model name + reasoning effort, current project, git branch, and your Claude plan rate-limit usage
