@@ -12,7 +12,7 @@ as progress bars. Written in TypeScript, shipped as a single dependency-free Nod
 
 ```
 ◈ 42% · ◆ Opus (high) · ⌂ my-project · ⎇ main
-⏱ [████░░░░░░] 23% (resets 14:30) · 📅 [████░░░░░░] 41% (resets Fri)
+⏱ ■■□□□□□□□□ 23% (resets 14:30) · ▦ ■■■■□□□□□□ 41% (resets Fri)
 ```
 
 > Line 2 (rate-limit bars) only appears for Claude.ai Pro/Max subscribers, after the first API
@@ -97,8 +97,19 @@ Environment variables:
 | `⌂`    | Project folder name       | `workspace.current_dir`                |
 | `⎇`    | Git branch                | `git branch --show-current`            |
 | `⏱`    | 5-hour rate-limit bar     | `rate_limits.five_hour` (Pro/Max only) |
-| `📅`   | 7-day rate-limit bar      | `rate_limits.seven_day` (Pro/Max only) |
+| `▦`    | 7-day rate-limit bar      | `rate_limits.seven_day` (Pro/Max only) |
 | `⬆`    | Update available          | background update check                |
+
+### Progress bar colors
+
+The icon, bar, and percentage are all colored by usage level:
+
+| Range   | Color  |
+| ------- | ------ |
+| 0–60%   | Green  |
+| 61–80%  | Yellow |
+| 81–95%  | Orange |
+| > 95%   | Red    |
 
 ## How it works
 
@@ -128,4 +139,4 @@ the script path.
 
 ## License
 
-[MIT](./LICENSE)
+[Apache 2.0](./LICENSE)
