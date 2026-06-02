@@ -1,0 +1,50 @@
+{
+  "name": "@appoutlet/cc-statusline",
+  "version": "1.0.0",
+  "description": "Rich multi-line status line for Claude Code — context, model, git and plan-usage bars",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "statusline",
+    "cli"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MessiasLima/claude-code-rich-statusline.git"
+  },
+  "bin": {
+    "cc-statusline": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "esbuild src/cli.ts src/install.ts src/update.ts --bundle --minify --platform=node --format=cjs --target=node18 --banner:js=\"#!/usr/bin/env node\" --outdir=dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky || true",
+    "postinstall": "node -e \"const f='dist/install.js';require('fs').existsSync(f)&&require('child_process').execFileSync(process.execPath,[f],{stdio:'inherit'})\"",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.24.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2"
+  }
+}
