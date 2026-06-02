@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { claudeDir, settingsPath } from './paths';
 import { readSettingsFile } from './settings';
 
@@ -15,9 +16,16 @@ function manualHint(reason: string): void {
   console.log(`Add this to ~/.claude/settings.json manually:\n${SNIPPET}`);
 }
 
+function isGlobalInstall(): boolean {
+  // Standard npm env var for global installs.
+  if (process.env.npm_config_global === 'true') return true;
+  // Fallback: some environments (sudo, Volta) don't propagate npm_config_global.
+  // If __dirname contains the expected installed path, we're not in a dev workspace.
+  return __dirname.includes(join('node_modules', '@appoutlet', 'cc-statusline'));
+}
+
 function configure(): void {
-  // Only act on an explicit global install; skip dev/transitive installs.
-  if (process.env.npm_config_global !== 'true') return;
+  if (!isGlobalInstall()) return;
   if (process.env.CC_STATUSLINE_NO_SETUP) return;
 
   const dir = claudeDir();
