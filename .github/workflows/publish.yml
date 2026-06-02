@@ -18,4 +18,5 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org
       - run: npm ci
+      - run: npm build
       - run: npm publish --provenance
