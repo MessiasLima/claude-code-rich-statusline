@@ -104,12 +104,12 @@ Environment variables:
 
 The icon, bar, and percentage are all colored by usage level:
 
-| Range   | Color  |
-| ------- | ------ |
-| 0–60%   | Green  |
-| 61–80%  | Yellow |
-| 81–95%  | Orange |
-| > 95%   | Red    |
+| Range  | Color  |
+| ------ | ------ |
+| 0–60%  | Green  |
+| 61–80% | Yellow |
+| 81–95% | Orange |
+| > 95%  | Red    |
 
 ## How it works
 
