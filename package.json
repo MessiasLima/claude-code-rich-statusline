@@ -27,14 +27,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "esbuild src/cli.ts src/install.ts src/update.ts --bundle --minify --platform=node --format=cjs --target=node18 --banner:js=\"#!/usr/bin/env node\" --outdir=dist",
+    "build": "esbuild src/cli.ts src/update.ts --bundle --minify --platform=node --format=cjs --target=node18 --banner:js=\"#!/usr/bin/env node\" --outdir=dist",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky || true",
-    "postinstall": "node -e \"const p=require('path');const f=p.join(p.dirname(process.env.npm_package_json||p.resolve('package.json')),'dist','install.js');require('fs').existsSync(f)&&require('child_process').execFileSync(process.execPath,[f],{stdio:'inherit'})\"",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run build"
   },
   "devDependencies": {
