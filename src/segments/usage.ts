@@ -7,7 +7,7 @@ const SEPARATOR = ' · ';
 
 type ResetFormatter = (epochSeconds: number) => string;
 
-/** Build one window's segment, e.g. `⏱ ■■□□□□□□□□ 23% (resets 14:30)`. */
+/** Build one window's segment, e.g. `⏱ ▰▰▱▱▱▱▱▱▱▱ 23% (resets 14:30)`. */
 function renderWindow(
   icon: string,
   window: RateLimitWindow | undefined,
