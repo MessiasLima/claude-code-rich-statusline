@@ -1,8 +1,8 @@
 import { GREEN, YELLOW, ORANGE, RED, RESET } from './colors';
 
 const WIDTH = 10;
-const FILLED = '●';
-const EMPTY = '○';
+const FILLED = '█';
+const EMPTY = '░';
 
 /** Color a usage percentage: green ≤60, yellow ≤80, orange ≤95, red otherwise. */
 export function thresholdColor(pct: number): string {
@@ -13,7 +13,7 @@ export function thresholdColor(pct: number): string {
 }
 
 /**
- * Render a 10-cell progress bar followed by the percentage, e.g. `●●○○○○○○○○ 23%`.
+ * Render a 10-cell progress bar followed by the percentage, e.g. `██░░░░░░░░ 23%`.
  * Matches the original bash integer rounding: filled = floor((pct*10 + 50) / 100).
  */
 export function bar(percentage: number): string {

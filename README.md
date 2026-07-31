@@ -12,7 +12,7 @@ as progress bars. Written in TypeScript, shipped as a single dependency-free Nod
 
 ```
 ◈ 42% · ◆ Opus (high) · ⌂ my-project · ⎇ main
-⏱ ▰▰▱▱▱▱▱▱▱▱ 23% (resets 14:30) · ▦ ▰▰▰▰▱▱▱▱▱▱ 41% (resets Fri)
+⏱ ██░░░░░░░░ 23% (resets 14:30) · ▦ ████░░░░░░ 41% (resets Fri)
 ```
 
 > Line 2 (rate-limit bars) only appears for Claude.ai Pro/Max subscribers, after the first API
