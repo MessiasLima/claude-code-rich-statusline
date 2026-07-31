@@ -35,7 +35,7 @@ stdin JSON → input.ts (parse) → statusline.ts (build lines) → stdout
 
 `statusline.ts` exports two functions:
 
-- `buildLine1()` — joins up to 5 segment strings with ` · `, skipping empty strings
+- `buildLine1()` — joins up to 5 segment strings with `·`, skipping empty strings
 - `buildLine2()` — returns the rate-limit bar string (empty when no rate-limit data)
 
 Each segment lives in `src/segments/` and returns a formatted string or `""`. Segments are pure functions of the parsed input — no side effects, no I/O.
@@ -63,6 +63,7 @@ Update checks are skipped when running via `npx` and throttled to once every 24 
 ### Build output
 
 esbuild produces two self-contained binaries:
+
 - `dist/cli.js` — the main statusline renderer (bin entry)
 - `dist/update.js` — the background update worker (spawned by trigger.ts)
 
