@@ -26,14 +26,13 @@ as progress bars. Written in TypeScript, shipped as a single dependency-free Nod
 
 ## Setup
 
-### Recommended: global install (auto-configures)
+### Recommended: global install
 
 ```bash
 npm install -g @appoutlet/cc-statusline
 ```
 
-The install automatically writes the status line into `~/.claude/settings.json` (creating the file
-if needed, and never overwriting an existing `statusLine`). The resulting config is:
+Then add this to `~/.claude/settings.json`:
 
 ```json
 {
@@ -43,9 +42,6 @@ if needed, and never overwriting an existing `statusLine`). The resulting config
   }
 }
 ```
-
-If you ran with `--ignore-scripts`, set `CC_STATUSLINE_NO_SETUP=1`, or already had a different
-`statusLine`, just add the snippet above manually.
 
 A global install is recommended because the status line runs on **every render** — the binary is
 invoked directly with no per-render resolution overhead.
@@ -62,8 +58,8 @@ invoked directly with no per-render resolution overhead.
 ```
 
 `npx` re-resolves the package on every render, so it is noticeably slower for a status line, and it
-does not run the auto-setup or auto-update. Use `-y` because stdin carries the JSON payload and
-cannot answer npx's first-run install prompt.
+does not run the auto-update. Use `-y` because stdin carries the JSON payload and cannot answer
+npx's first-run install prompt.
 
 ## Auto-update
 
@@ -81,12 +77,11 @@ npm i -g @appoutlet/cc-statusline@latest
 
 Environment variables:
 
-| Variable                        | Effect                                           |
-| ------------------------------- | ------------------------------------------------ |
-| `CC_STATUSLINE_NO_UPDATE`       | Disable update checks entirely                   |
-| `CC_STATUSLINE_UPDATE_DRY_RUN`  | Check and notify (`⬆`) but never install         |
-| `CC_STATUSLINE_UPDATE_INTERVAL` | Hours between checks (default `24`)              |
-| `CC_STATUSLINE_NO_SETUP`        | Skip the postinstall settings.json configuration |
+| Variable                        | Effect                                   |
+| ------------------------------- | ---------------------------------------- |
+| `CC_STATUSLINE_NO_UPDATE`       | Disable update checks entirely           |
+| `CC_STATUSLINE_UPDATE_DRY_RUN`  | Check and notify (`⬆`) but never install |
+| `CC_STATUSLINE_UPDATE_INTERVAL` | Hours between checks (default `24`)      |
 
 ## What it displays
 
@@ -100,6 +95,8 @@ Environment variables:
 | `▦`    | 7-day rate-limit bar      | `rate_limits.seven_day` (Pro/Max only) |
 | `⬆`    | Update available          | background update check                |
 
+All symbols above are defaults — see [Customization](#customization) to change them.
+
 ### Progress bar colors
 
 The icon, bar, and percentage are all colored by usage level:
@@ -111,31 +108,54 @@ The icon, bar, and percentage are all colored by usage level:
 | 81–95% | Orange |
 | > 95%  | Red    |
 
+## Customization
+
+Every icon, the progress-bar characters, the bar width, and the segment separator are configurable
+via the `ccStatusline` key in `~/.claude/settings.local.json` (falling back to
+`~/.claude/settings.json`). The local file wins per-key. Settings missing from both files keep their
+defaults; an unparseable or invalid value also falls back to its default. Set an icon to `""` to hide
+its glyph.
+
+> **Recommended: put `ccStatusline` in `settings.local.json`, not `settings.json`.** `ccStatusline` is
+> a custom key that Claude Code's own settings schema doesn't recognize, so tools (including Claude
+> Code itself, when asked to edit your settings) may reject the write or drop the key from
+> `settings.json`. `settings.local.json` isn't validated against that schema, so it's the safe place
+> for this block — and it's also gitignored by default, which suits a personal display preference
+> better than a shared, version-controlled file anyway.
+
+```jsonc
+// ~/.claude/settings.local.json
+{
+  "ccStatusline": {
+    "icons": {
+      "context": "◈", // context-window usage
+      "model": "◆", // model + reasoning effort
+      "directory": "⌂", // current folder name
+      "branch": "⎇", // git branch
+      "update": "⬆", // pending update
+      "fiveHour": "⏱", // 5-hour rate-limit window
+      "week": "▦", // 7-day rate-limit window
+    },
+    "progressBar": {
+      "filled": "█", // used cells
+      "empty": "░", // remaining cells
+      "width": 10, // total cells
+    },
+    "separator": " · ", // joins segments and windows
+  },
+}
+```
+
 ## How it works
 
 Claude Code pipes a JSON payload to the configured command on stdin. `cc-statusline` parses it with
 native `JSON.parse` (no `jq` needed), composes the two lines, and prints them — then, only when due,
 fires a throttled background update check that exits without blocking output.
 
-## Development
+## Contributing
 
-```bash
-npm install        # installs deps and wires the Husky pre-push hook
-npm run typecheck  # tsc --noEmit
-npm run lint       # eslint
-npm run format     # prettier --write
-npm run build      # esbuild → dist/{cli,install,update}.js
-```
-
-Code is organized one feature per file under `src/` (`segments/usage.ts`, `update/*`, etc.). A Husky
-**pre-push** hook runs typecheck + lint + format check, so every push is clean.
-
-## Legacy (bash)
-
-The original dependency on [`jq`](https://stedolan.github.io/jq/) lives on in
-[`statusline.sh`](./statusline.sh) for users who prefer a pure shell script. Install `jq`
-(`brew install jq` / `apt install jq`), make it executable, and point your `statusLine.command` at
-the script path.
+Want to work on `cc-statusline` itself? See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, commands,
+and architecture notes.
 
 ## License
 

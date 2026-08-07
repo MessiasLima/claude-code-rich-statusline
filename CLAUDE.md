@@ -24,27 +24,41 @@ A husky pre-push hook enforces `typecheck + lint + format:check` before every pu
 Claude Code pipes a JSON payload to `cc-statusline` via stdin on every prompt render. The flow is:
 
 ```
-stdin JSON → input.ts (parse) → statusline.ts (build lines) → stdout
-                                         ↓ (fire-and-forget)
-                               update/trigger.ts → spawns dist/update.js detached
+stdin JSON → input.ts (parse) → config.ts (read theme) → statusline.ts (build lines) → stdout
+                                                 ↓ (fire-and-forget)
+                                       update/trigger.ts → spawns dist/update.js detached
 ```
 
-`src/cli.ts` is the 14-line entry point that ties these together — read it first.
+`src/cli.ts` is the entry point that ties these together — read it first.
 
 ### Line composition
 
 `statusline.ts` exports two functions:
 
-- `buildLine1()` — joins up to 5 segment strings with `·`, skipping empty strings
-- `buildLine2()` — returns the rate-limit bar string (empty when no rate-limit data)
+- `buildLine1(input, config)` — joins up to 5 segment strings with `config.separator`, skipping empty strings
+- `buildLine2(input, config)` — returns the rate-limit bar string (empty when no rate-limit data)
 
-Each segment lives in `src/segments/` and returns a formatted string or `""`. Segments are pure functions of the parsed input — no side effects, no I/O.
+Each segment lives in `src/segments/` and returns a formatted string or `""`. Segments are pure
+functions of the parsed input plus a `StatuslineConfig` (icons + progress-bar chars) — no side
+effects, no I/O.
 
 ### Adding a segment
 
-1. Create `src/segments/my-segment.ts` exporting a function that accepts `StatusLineInput` and returns a colored string or `""`.
+1. Create `src/segments/my-segment.ts` exporting a function that accepts `StatusLineInput` (+ a `StatuslineIcons` when it renders a glyph) and returns a colored string or `""`.
 2. Import and call it in `statusline.ts` inside `buildLine1()` (or `buildLine2()` for bar-style output).
 3. Use `paint(COLOR, text)` from `colors.ts` for ANSI coloring.
+
+### Display config
+
+`config.ts` resolves the display theme (`icons`, `progressBar`, `separator`) from the `ccStatusline`
+key in `~/.claude/settings.local.json` then `~/.claude/settings.json`, merged over defaults in
+`DEFAULT_CONFIG`. `cli.ts` calls `readConfig()` once per render and passes the result down — segments
+never read config files themselves.
+
+`ccStatusline` is a custom key unknown to Claude Code's own settings schema, so writes to
+`settings.json` (including edits made by Claude Code itself) can be rejected or stripped. Recommend
+`settings.local.json` — unvalidated against that schema — as the place users set this key; docs and
+examples should point there first.
 
 ### Update mechanism
 

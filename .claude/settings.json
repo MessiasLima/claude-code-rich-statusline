@@ -1,0 +1,23 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "node /Users/messias/Workspace/cc-statusline/dist/cli.js"
+  },
+  "ccStatusline": {
+    "icons": {
+      "context": "🧠",
+      "model": "🤖",
+      "directory": "📁",
+      "branch": "🌿",
+      "update": "⬆️",
+      "fiveHour": "5h",
+      "week": "7d"
+    },
+    "progressBar": {
+      "filled": "🟩",
+      "empty": "⬜",
+      "width": 12
+    },
+    "separator": " | "
+  }
+}
